@@ -3,7 +3,9 @@ import type { AWS } from '@serverless/typescript';
 import { 
   login,
   auth,
-  authenticated
+  authenticated,
+  authenticated2,
+  authenticated3,
 } from '@functions/index';
 
 const serverlessConfiguration: AWS = {
@@ -19,6 +21,10 @@ const serverlessConfiguration: AWS = {
       define: { 'require.resolve': undefined },
       platform: 'node',
     },
+    prune: {
+      automatic: true,
+      number: 5
+    }
   },
   plugins: [
     'serverless-esbuild',
@@ -41,7 +47,9 @@ const serverlessConfiguration: AWS = {
   functions: { 
     login,
     auth,
-    authenticated
+    authenticated,
+    authenticated2,
+    authenticated3
   },
 };
 

@@ -11,11 +11,11 @@ import schema from './schema';
 const login: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const { body } = event
 
-  if ( body.user !== 'test' && body.user !== '123'){
+  if ( body.pass !== '123'){
     return denied({message: 'User not found'});
   }
 
-  const token = jwt.sign({user: 'test'}, 'PASSWORD#123');
+  const token = jwt.sign({user: body.user, cpf: body.user}, 'PASSWORD#123');
 
 
   return success(token);

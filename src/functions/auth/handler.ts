@@ -3,20 +3,21 @@ import { middyfy } from '@libs/lambda';
 import jwt from 'jsonwebtoken';
 
 
-const hello  = async (event, _context, callback) => {
-  const token = event.authorizationToken.replace(/Bearer /g, '');
+const validate  = async (event, _context, callback) => {
+  const Bearer = event.authorizationToken?.replace(/Bearer /g, '');
   
-  jwt.verify(token, 'PASSWORD#123', (err, _verified) => {
-    if (err) {
-      console.error('JWT Error', err, err.stack);
-      callback(null, generatePolicy('user-id', 'Deny', event.methodArn));
-    } else {
-      callback(null, generatePolicy('user-id', 'Allow', event.methodArn));
-    }
-  });
+  try {
+    const token = await jwt.verify(Bearer, 'PASSWORD#123');
+
+    callback(null, generatePolicy({cpf: token.cpf}, 'Allow', event.methodArn));
+  }catch(err) {
+    callback(null, generatePolicy(null, 'Deny', event.methodArn));
+  }
+  
+  
 }
 
-export const main = middyfy(hello);
+export const main = middyfy(validate);
 
 // Help function to generate an IAM policy
 const generatePolicy = function(principalId, effect, resource) {
