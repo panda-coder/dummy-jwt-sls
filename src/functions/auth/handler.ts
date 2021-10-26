@@ -3,10 +3,10 @@ import { middyfy } from '@libs/lambda';
 import jwt from 'jsonwebtoken';
 
 
-const hello  = async (event, context, callback) => {
+const hello  = async (event, _context, callback) => {
   const token = event.authorizationToken.replace(/Bearer /g, '');
   
-  jwt.verify(token, 'PASSWORD#123', (err, verified) => {
+  jwt.verify(token, 'PASSWORD#123', (err, _verified) => {
     if (err) {
       console.error('JWT Error', err, err.stack);
       callback(null, generatePolicy('user-id', 'Deny', event.methodArn));
@@ -20,14 +20,14 @@ export const main = middyfy(hello);
 
 // Help function to generate an IAM policy
 const generatePolicy = function(principalId, effect, resource) {
-  var authResponse = {};
+  var authResponse: any = {};
   
   authResponse.principalId = principalId;
   if (effect && resource) {
-      var policyDocument = {};
+      const policyDocument: any = {};
       policyDocument.Version = '2012-10-17'; 
       policyDocument.Statement = [];
-      var statementOne = {};
+      const statementOne: any = {};
       statementOne.Action = 'execute-api:Invoke'; 
       statementOne.Effect = effect;
       statementOne.Resource = resource;
